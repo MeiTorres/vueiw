@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es" itemscope itemtype="http://schema.org/WebPage">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Agenda Vue para contactos" itemprop="description">
+    <meta name="author" content="e-ghost 2019" itemprop="author">
+    <title itemprop="name">Agenda Vue</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/freelancer.css" rel="stylesheet">
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "WebPage",
+            "name": "Agenda Vue",
+            "description": "Aplicación para gestionar contactos con Vue",
+            "author": {
+                "@type": "Person",
+                "name": "e-ghost"
+            },
+            "mainEntity": {
+                "@type": "ItemList",
+                "itemListElement": [
+                    {
+                        "@type": "Person",
+                        "name": "Mei",
+                        "email": "mei.torres@opendeusto.es",
+                        "telephone": "11111111",
+                        "sameAs": ""
+                    },
+                    {
+                        "@type": "Person",
+                        "name": "Naroa",
+                        "email": "n.manterola@opendeusto.es",
+                        "telephone": "222222222",
+                        "sameAs": ""
+                    },
+                    {
+                        "@type": "Person",
+                        "name": "Lara",
+                        "email": "lara.p@opendeusto.es",
+                        "telephone": "3333333",
+                        "sameAs": "https://twitter.com/laraponcela"
+                    },
+                    {
+                        "@type": "Person",
+                        "name": "Paula",
+                        "email": "paula.zaldibar@opendeusto.es",
+                        "telephone": "4444444",
+                        "sameAs": "https://twitter.com/paulazaldibar"
+                    }
+                ]
+            }
+        }
+    </script>
+</head>
+
+<body id="page-top" class="index">
+    <div id="app" itemscope itemtype="http://schema.org/SoftwareApplication">
+        <!-- Header -->
+        <header>
+            <div class="intro-text">
+                <span class="name" itemprop="name">AGENDA VUE</span>
+            </div>
+        </header>
+
+        <!-- Contactos -->
+        <section id="contactos" itemscope itemtype="http://schema.org/ItemList">
+            <meta itemprop="name" content="Lista de contactos">
+            <!-- Añadir contacto -->
+            <div class="form-container">
+                <form @submit.prevent="agregarContacto" itemscope itemtype="http://schema.org/Action">
+                    <meta itemprop="name" content="Agregar Contacto">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input v-model="nuevoContacto.nombre" type="text" class="form-control" placeholder="Nombre" required itemprop="name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input v-model="nuevoContacto.email" type="email" class="form-control" placeholder="Email" required itemprop="email">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input v-model="nuevoContacto.telefono" type="tel" class="form-control" placeholder="Número de teléfono" required itemprop="telephone">
+                    </div>
+                    <div class="form-group">
+                        <label>Twitter</label>
+                        <input v-model="nuevoContacto.twitterHandle" type="text" class="form-control" placeholder="@ de Twitter" itemprop="sameAs">
+                    </div>
+                    <button class="btn btn-success btn-lg">Añadir</button>
+                </form>
+            </div>
+
+            <!-- Tabla -->
+            <div class="table-container">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Twitter</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(contacto, index) in contactos" :key="index" itemscope itemtype="http://schema.org/Person">
+                            <td itemprop="name">{{ contacto.nombre }}</td>
+                            <td itemprop="email">{{ contacto.email }}</td>
+                            <td itemprop="telephone">{{ contacto.telefono }}</td>
+                            <td>
+                                <div style="display: flex; align-items: center;"> <!-- Usamos flex para alineación -->
+                                  <span itemprop="sameAs">{{ contacto.twitterHandle }}</span>
+                                  <a :href="contacto.twitter" target="_blank" v-if="contacto.twitter">
+                                    <button class="btn btn-primary btn-sm ms-2">Seguir</button> <!-- Aquí aplicamos ms-2 -->
+                                  </a>
+                                </div>
+                              </td>
+                              
+                            <td>
+                                <button class="btn btn-danger btn-sm" @click="borrarContacto(index)">Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.5.13"></script>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    contactos: [
+                        {
+                            nombre: 'Mei',
+                            email: 'mei.torres@opendeusto.es',
+                            telefono: '11111111',
+                            twitterHandle: '',
+                            twitter: ''
+                        },
+                        {
+                            nombre: 'Naroa',
+                            email: 'n.manterola@opendeusto.es',
+                            telefono: '222222222',
+                            twitterHandle: '',
+                            twitter: ''
+                        },
+                        {
+                            nombre: 'Lara',
+                            email: 'lara.p@opendeusto.es',
+                            telefono: '333333',
+                            twitterHandle: '@laraponcela',
+                            twitter: 'https://twitter.com/laraponcela'
+                        },
+                        {
+                            nombre: 'Paula',
+                            email: 'paula.zaldibar@opendeusto.es',
+                            telefono: '4444444',
+                            twitterHandle: '@paulazaldibar',
+                            twitter: 'https://twitter.com/paulazaldibar'
+                        }
+                    ],
+                    nuevoContacto: {
+                        nombre: '',
+                        email: '',
+                        telefono: '',
+                        twitterHandle: '',
+                        twitter: ''
+                    }
+                };
+            },
+            methods: {
+                agregarContacto() {
+                    if (this.nuevoContacto.nombre && this.nuevoContacto.email && this.nuevoContacto.telefono) {
+                        const twitterHandle = this.nuevoContacto.twitterHandle.replace('@', '').trim();
+                        const twitterLink = twitterHandle
+                            ? `https://twitter.com/${twitterHandle}`
+                            : '';
+                        this.contactos.push({
+                            nombre: this.nuevoContacto.nombre,
+                            email: this.nuevoContacto.email,
+                            telefono: this.nuevoContacto.telefono,
+                            twitterHandle: `@${twitterHandle}`,
+                            twitter: twitterLink
+                        });
+                        this.nuevoContacto = { nombre: '', email: '', telefono: '', twitterHandle: '', twitter: '' };
+                    } else {
+                        alert('Por favor, completa todos los campos obligatorios.');
+                    }
+                },
+                borrarContacto(index) {
+                    this.contactos.splice(index, 1);
+                }
+            }
+        });
+
+        app.mount('#app');
+    </script>
+    
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    
+    <!-- Vue -->
+    <script src="js/vue.js"></script>   
+</body>
+</html>
